@@ -1,4 +1,6 @@
+from typing import Literal
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from enums import Categories
 from schemas import FlipCardCreate, CardEdit, FlipCardResponse
@@ -14,40 +16,48 @@ def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
         card_data (FlipCardCreate): The data for the new card, including front and back text and category.
 
     Raises:
-        HTTPException: If the category is not valid or if the card already exists in the database.
+        HTTPException: If the category is not valid, if the card already exists in the database,
+                       or if a database error occurs during creation.
 
     Returns:
         FlipCardResponse: The created card, validated and serialized into a response format.
     """
-    card_duplicate = (
-        db.query(FlipCard)
-        .filter(
-            FlipCard.front_text == card_data.front_text,
-            FlipCard.category == card_data.category,
-        )
-        .first()
-    )
+    try:
+        if card_data.category not in Categories.__members__:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Category '{card_data.category}' is not a valid category!",
+            )
 
-    if card_data.category not in Categories.__members__:
+        card_duplicate = (
+            db.query(FlipCard)
+            .filter(
+                FlipCard.front_text == card_data.front_text,
+                FlipCard.category == card_data.category,
+            )
+            .first()
+        )
+        if card_duplicate:
+            raise HTTPException(status_code=400, detail="This card already exists!")
+
+        card = FlipCard(
+            front_text=card_data.front_text,
+            back_text=card_data.back_text,
+            category=card_data.category,
+        )
+
+        db.add(card)
+        db.commit()
+        db.refresh(card)
+
+        return FlipCardResponse.model_validate(card)
+
+    except SQLAlchemyError as e:
+        db.rollback()
         raise HTTPException(
-            status_code=400,
-            detail=f"Category '{card_data.category}' is not a valid category!",
-        )
-
-    if card_duplicate:
-        raise HTTPException(status_code=400, detail="This card already exists!")
-
-    card = FlipCard(
-        front_text=card_data.front_text,
-        back_text=card_data.back_text,
-        category=card_data.category,
-    )
-
-    db.add(card)
-    db.commit()
-    db.refresh(card)
-
-    return FlipCardResponse.model_validate(card)
+            status_code=500,
+            detail=f"An error occurred while creating the card: {str(e)}",
+        ) from e
 
 
 def get_all_cards(db: Session) -> list[FlipCardResponse]:
@@ -65,13 +75,19 @@ def get_all_cards(db: Session) -> list[FlipCardResponse]:
     return [FlipCardResponse.model_validate(card) for card in all_cards]
 
 
-def get_all_cards_from_category(db: Session, category: str) -> list[FlipCardResponse]:
+CategoryLiteral = Literal["OOP", "DSA", "WEB"]
+
+
+def get_all_cards_from_category(
+    db: Session, category: CategoryLiteral
+) -> list[FlipCardResponse]:
     """
     This function retrieves all cards from a specified category.
 
     Args:
         db (Session): The database session used to interact with the database.
-        category (str): The name of the category to filter the cards by.
+        category (CategoryLiteral): The name of the category to filter the cards by. 
+                                    Allowed values: "OOP", "DSA", "WEB".
 
     Raises:
         HTTPException: If no cards are found in the specified category.
@@ -85,6 +101,7 @@ def get_all_cards_from_category(db: Session, category: str) -> list[FlipCardResp
         raise HTTPException(
             status_code=404, detail=f"No cards found in category {category}."
         )
+
     return [FlipCardResponse.model_validate(card) for card in cards_from_category]
 
 
