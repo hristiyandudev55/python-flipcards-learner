@@ -12,7 +12,7 @@ from crud import (
 from database import get_db
 
 
-CategoryType = Literal["OOP", "DSA", "WEB"]
+CategoryType = Literal["OOP", "DSA", "WEB", "AZURE", "LINUX", "DOCKER", "KUBERNETES", "CI_CD", "GENERAL"]
 cards_router = APIRouter(prefix="/api/cards", tags=["Cards"])
 
 

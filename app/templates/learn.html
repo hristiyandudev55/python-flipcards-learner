@@ -16,4 +16,21 @@
     </div>
     {% endfor %}
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const flipCards = document.querySelectorAll('.flip-card');
+        flipCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove flip class from all other cards
+                flipCards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        otherCard.classList.remove('flip');
+                    }
+                });
+                // Toggle flip class on clicked card
+                card.classList.toggle('flip');
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -75,7 +75,7 @@ def get_all_cards(db: Session) -> list[FlipCardResponse]:
     return [FlipCardResponse.model_validate(card) for card in all_cards]
 
 
-CategoryLiteral = Literal["OOP", "DSA", "WEB"]
+CategoryLiteral = Literal["OOP", "DSA", "WEB", "DOCKER", "LINUX", "AZURE", "CI_CD"]
 
 
 def get_all_cards_from_category(
