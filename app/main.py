@@ -1,6 +1,7 @@
 import os
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -18,6 +19,14 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 app = FastAPI()
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Mount static files with absolute path
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

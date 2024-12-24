@@ -5,21 +5,16 @@ import Learn from './components/Learn.vue'
 </script>
 
 <template>
-  <header>
+  <header v-if="$route.path === '/' || $route.path === '/category'">
     <img alt="App logo" class="logo" src="@/assets/rocket.svg" width="125" height="125" />
-
     <div class="wrapper">
       <HelloWorld msg="Flip for Success!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/category">Learn</RouterLink>
       </nav>
     </div>
   </header>
-
-  
-
   <RouterView />
 </template>
 
