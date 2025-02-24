@@ -1,5 +1,7 @@
 from enum import Enum
-#TODO - add kubernetes category.
+
+# TODO - add kubernetes category.
+
 
 class Categories(str, Enum):
     OOP = "OOP"

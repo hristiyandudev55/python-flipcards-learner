@@ -26,6 +26,7 @@ class CardEdit(BaseConfig):
     back_text: Optional[str] | None = None
     category: Optional[str] | None = None
 
+
 class FlipCardResponse(BaseConfig):
     front_text: str
     back_text: str

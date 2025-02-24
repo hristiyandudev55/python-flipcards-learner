@@ -12,6 +12,7 @@ TEST_DATABASE_URL = DB_TEST_URL
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 @pytest.fixture(scope="function")
 def db_session():
     """Clean db for every test."""
@@ -23,9 +24,11 @@ def db_session():
         session.close()
         Base.metadata.drop_all(bind=engine)
 
+
 @pytest.fixture(scope="function")
 def client(db_session):
     """FastAPI Client Test db."""
+
     def override_get_db():
         yield db_session
 

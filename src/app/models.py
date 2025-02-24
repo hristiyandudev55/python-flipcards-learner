@@ -6,7 +6,6 @@ from app.enums import Categories
 Base = declarative_base()
 
 
-
 class FlipCard(Base):
     __tablename__ = "flipcards"
 
