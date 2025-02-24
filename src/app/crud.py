@@ -1,10 +1,12 @@
 from typing import Literal
+
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from enums import Categories
-from schemas import FlipCardCreate, CardEdit, FlipCardResponse
-from models import FlipCard
+
+from app.enums import Categories
+from app.models import FlipCard
+from app.schemas import CardEdit, FlipCardCreate, FlipCardResponse
 
 
 def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
@@ -75,7 +77,7 @@ def get_all_cards(db: Session) -> list[FlipCardResponse]:
     return [FlipCardResponse.model_validate(card) for card in all_cards]
 
 
-CategoryLiteral = Literal["OOP", "DSA", "WEB", "DOCKER", "LINUX", "AZURE", "CI_CD"]
+CategoryLiteral = Literal["OOP", "DSA", "WEB", "DOCKER", "KUBERNETES", "LINUX", "AZURE", "CI_CD"]
 
 
 def get_all_cards_from_category(
@@ -103,7 +105,6 @@ def get_all_cards_from_category(
         )
 
     return [FlipCardResponse.model_validate(card) for card in cards_from_category]
-
 
 def edit_card(db: Session, card_id: int, card_data: CardEdit) -> FlipCardResponse:
     """

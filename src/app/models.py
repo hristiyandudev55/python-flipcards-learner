@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Enum, Integer, String
 from sqlalchemy.orm import declarative_base
-from enums import Categories
+
+from app.enums import Categories
 
 Base = declarative_base()
 

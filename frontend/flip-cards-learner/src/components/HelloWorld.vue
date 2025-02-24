@@ -11,7 +11,7 @@ defineProps({
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h3>
-      Get ready to rock your progress review with Flip for Success!
+      Get ready to rock your  interview with Flip for Success!
     </h3>
   </div>
 </template>

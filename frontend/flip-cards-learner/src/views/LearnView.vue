@@ -52,7 +52,7 @@ const navigateToCategory = (category) => {
         Learn Docker fundamentals, container management, and deployment strategies
       </WelcomeItem>
 
-      <WelcomeItem @click="navigateToCategory('CICD')">
+      <WelcomeItem @click="navigateToCategory('CI_CD')">
         <template #icon>
           <IconGitHubAction />
         </template>

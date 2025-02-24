@@ -1,4 +1,8 @@
 {
-    "python.envFile": "${workspaceFolder}/.env",
-    "python.analysis.extraPaths": ["./app"]
+    "python.defaultInterpreterPath": "/Users/a516095/Library/Caches/pypoetry/virtualenvs/app-VlfEE9rJ-py3.13/bin/python",
+    "python.analysis.extraPaths": ["${workspaceFolder}/src"],
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.indexing": true,
+    "python.envFile": "${workspaceFolder}/.env"
 }

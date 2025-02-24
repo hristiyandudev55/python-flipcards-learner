@@ -1,18 +1,20 @@
 from typing import Literal
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas import CardEdit, FlipCardCreate, FlipCardResponse
-from crud import (
+
+from app.crud import (
     create_card,
     delete_card,
     edit_card,
     get_all_cards,
     get_all_cards_from_category,
 )
-from database import get_db
+from app.database import get_db
+from app.schemas import CardEdit, FlipCardCreate, FlipCardResponse
 
-
-CategoryType = Literal["OOP", "DSA", "WEB", "AZURE", "LINUX", "DOCKER", "KUBERNETES", "CI_CD", "GENERAL"]
+CategoryType = Literal[
+    "OOP", "DSA", "WEB", "AZURE", "LINUX", "DOCKER", "KUBERNETES", "CI_CD", "GENERAL"
+]
 cards_router = APIRouter(prefix="/api/cards", tags=["Cards"])
 
 
