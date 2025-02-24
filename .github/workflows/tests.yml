@@ -46,9 +46,11 @@ jobs:
         run: poetry install --no-root
 
       - name: Run tests
+        env:
+          DB_URL: "postgresql://test_user:test_password@localhost/test_db"
+          TEST_DB_URL: "postgresql://test_user:test_password@localhost/test_db"
         run: poetry run pytest --maxfail=0 --disable-warnings .
 
-      # Optional: Push changes if tests pass
       - name: Push changes if tests pass
         if: success()
         env:
