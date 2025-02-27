@@ -1,6 +1,9 @@
 from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.utils.s3_logger import s3_logger
+from app.enums import LogAction
+
 
 from app.crud import (
     create_card,
@@ -49,9 +52,29 @@ def read_cards_from_category(category: CategoryType, db: Session = Depends(get_d
         list[FlipCardResponse]: A list of cards in the specified category.
     """
     try:
-        return get_all_cards_from_category(db=db, category=category)
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+        s3_logger.log_action(
+            LogAction.CARD_READ.value,
+            {"category": category, "operation": "read_cards_from_category"},
+        )
+
+        cards = get_all_cards_from_category(db=db, category=category)
+
+        s3_logger.log_action(
+            LogAction.CARD_READ.value,
+            {"category": category, "cards_count": len(cards), "status": "success"},
+        )
+
+        return cards
+    except Exception as e:
+        s3_logger.log_action(
+            LogAction.ERROR.value,
+            {
+                "category": category,
+                "operation": "read_cards_from_category",
+                "error": str(e),
+            },
+        )
+        raise
 
 
 @cards_router.get("/", response_model=list[FlipCardResponse])

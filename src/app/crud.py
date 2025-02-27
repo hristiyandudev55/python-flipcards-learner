@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from app.enums import Categories
 from app.models import FlipCard
 from app.schemas import CardEdit, FlipCardCreate, FlipCardResponse
+from app.utils.s3_logger import s3_logger
+from app.enums import LogAction
 
 
 def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
@@ -26,6 +28,8 @@ def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
     """
     try:
         if card_data.category not in Categories.__members__:
+            error_msg = f"Category '{card_data.category}' is not a valid category!"
+            s3_logger.log_action(LogAction.ERROR.value, {"error": error_msg, "operation": "create_card"})
             raise HTTPException(
                 status_code=400,
                 detail=f"Category '{card_data.category}' is not a valid category!",
@@ -40,6 +44,8 @@ def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
             .first()
         )
         if card_duplicate:
+            error_msg = "This card already exists!"
+            s3_logger.log_action(LogAction.ERROR.value, {"error": error_msg, "operation": "create_card"})
             raise HTTPException(status_code=400, detail="This card already exists!")
 
         card = FlipCard(
@@ -52,9 +58,19 @@ def create_card(db: Session, card_data: FlipCardCreate) -> FlipCardResponse:
         db.commit()
         db.refresh(card)
 
+        s3_logger.log_action(LogAction.CARD_CREATED.value, {
+            "card_id": card.id,
+            "category": card.category,
+            "front_text": card.front_text
+        })
+
         return FlipCardResponse.model_validate(card)
 
     except SQLAlchemyError as e:
+        s3_logger.log_action(LogAction.ERROR.value, {
+            "operation": "create_card",
+            "error": str(e)
+        })
         db.rollback()
         raise HTTPException(
             status_code=500,
@@ -127,6 +143,8 @@ def edit_card(db: Session, card_id: int, card_data: CardEdit) -> FlipCardRespons
     card = db.query(FlipCard).filter(FlipCard.id == card_id).first()
 
     if not card:
+        error_msg = f"Card with id {card_id} not found"
+        s3_logger.log_action(LogAction.ERROR.value, {"error": error_msg, "operation": "update_card"})
         raise HTTPException(
             status_code=404,
             detail=f"Card with ID {card_id} not found. Please try a different ID.",
@@ -135,15 +153,32 @@ def edit_card(db: Session, card_id: int, card_data: CardEdit) -> FlipCardRespons
     updated = False
     if card_data.front_text is not None:
         card.front_text = card_data.front_text
+        s3_logger.log_action(LogAction.CARD_UPDATED.value, {
+            "card_id": card.id,
+            "updated_field": "front_text",
+            "front_text": card.front_text
+        })
         updated = True
     if card_data.back_text is not None:
         card.back_text = card_data.back_text
+        s3_logger.log_action(LogAction.CARD_UPDATED.value, {
+        "card_id": card.id,
+        "updated_field": "back_text",
+        "new_value": card.back_text
+    })
         updated = True
     if card_data.category is not None:
         card.category = card_data.category
+        s3_logger.log_action(LogAction.CARD_UPDATED.value, {
+        "card_id": card.id,
+        "updated_field": "category",
+        "new_value": card.category
+    })
         updated = True
 
     if not updated:
+        error_msg = "No valid fields provided for update"
+        s3_logger.log_action(LogAction.ERROR.value, {"error": error_msg, "operation": "update_card"})
         raise HTTPException(
             status_code=400, detail="No valid fields provided for update."
         )
@@ -154,7 +189,7 @@ def edit_card(db: Session, card_id: int, card_data: CardEdit) -> FlipCardRespons
     return FlipCardResponse.model_validate(card)
 
 
-def delete_card(db: Session, card_id: int) -> None:
+def delete_card(db: Session, card_id: int):
     """
     This function deletes a card from the database based on the provided card ID.
 
@@ -171,9 +206,17 @@ def delete_card(db: Session, card_id: int) -> None:
     card = db.query(FlipCard).filter(FlipCard.id == card_id).first()
 
     if not card:
+        error_msg = f"Card with id {card_id} not found"
+        s3_logger.log_action(LogAction.ERROR.value, {"error": error_msg, "operation": "delete_card"})
         raise HTTPException(
             status_code=404, detail=f"Card with ID {card_id} not found!"
         )
 
     db.delete(card)
     db.commit()
+
+    s3_logger.log_action(LogAction.CARD_DELETED.value, {
+        "card_id": card_id,
+        "category": card.category
+    })
+    return {"message": "Card deleted successfully"}

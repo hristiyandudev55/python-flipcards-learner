@@ -6,7 +6,7 @@ import Learn from './components/Learn.vue'
 
 <template>
   <header v-if="$route.path === '/' || $route.path === '/category'">
-    <img alt="App logo" class="logo" src="@/assets/rocket.svg" width="125" height="125" />
+    <img alt="App logo" class="logo" src="https://flipcards-app-assets.s3.eu-north-1.amazonaws.com/rocket.svg" width="125" height="125" />
     <div class="wrapper">
       <HelloWorld msg="Flip for Success!" />
       <nav>

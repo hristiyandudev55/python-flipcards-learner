@@ -13,3 +13,10 @@ class Categories(str, Enum):
     AZURE = "AZURE"
     CI_CD = "CI_CD"
     GENERAL = "GENERAL"
+
+class LogAction(Enum):
+    CARD_CREATED = "card_created"
+    CARD_UPDATED = "card_updated"
+    CARD_DELETED = "card_deleted"
+    CARD_READ = "card_read"
+    ERROR = "error"
