@@ -44,7 +44,7 @@ class S3Logger:
             "timestamp": timestamp,
             "action": action,
             "details": details
-        }
+        } # noqa: F841
         
         log_content = f"""
 Timestamp: {timestamp}
