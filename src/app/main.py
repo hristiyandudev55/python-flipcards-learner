@@ -7,11 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.cards import cards_router
 from app.utils.s3_logger import s3_logger
+
 # from app.utils.assets import assets_router - NO NEED ATM
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 import boto3
@@ -43,18 +42,18 @@ class S3Logger:
         log_data = {
             "timestamp": timestamp,
             "action": action,
-            "details": details
-        } # noqa: F841
-        
+            "details": details,
+        }  # noqa: F841
+
         log_content = f"""
 Timestamp: {timestamp}
 Action: {action}
 Details: {details}
 ------------------------
 """
-        
+
         log_filename = f"{self.log_folder}/{action}_{timestamp}.txt"
-        
+
         try:
             self.s3_client.put_object(
                 Bucket=self.bucket_name,
@@ -65,5 +64,6 @@ Details: {details}
             print(f"✅ Action logged to S3: {action}")
         except Exception as e:
             print(f"❌ Error logging action: {e}")
+
 
 s3_logger = S3Logger()

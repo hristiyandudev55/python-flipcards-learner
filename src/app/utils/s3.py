@@ -174,7 +174,7 @@ class S3Service:
             return False
 
     # WON'T USE IT NOW AS THE APP DOESNT HAVE PRIVATE ASSETS
-    # def generate_presigned_url(self, key: str) -> str: 
+    # def generate_presigned_url(self, key: str) -> str:
     #     """Generate a presigned URL for accessing an S3 object."""
     #     try:
     #         url = self.s3_client.generate_presigned_url(
@@ -188,7 +188,7 @@ class S3Service:
     #         return url
     #     except Exception as e:
     #         raise HTTPException(
-    #             status_code=500, 
+    #             status_code=500,
     #             detail=f"Error generating presigned URL: {str(e)}"
     #         )
 

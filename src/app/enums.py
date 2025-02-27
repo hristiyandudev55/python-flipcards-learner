@@ -14,6 +14,7 @@ class Categories(str, Enum):
     CI_CD = "CI_CD"
     GENERAL = "GENERAL"
 
+
 class LogAction(Enum):
     CARD_CREATED = "card_created"
     CARD_UPDATED = "card_updated"
