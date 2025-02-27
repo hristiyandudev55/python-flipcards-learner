@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to AWS Lightsail
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@18.185.87.171 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ec2-user@18.153.32.18 << 'EOF'
           cd /home/ec2-user/python-flipcards-learner || exit
           git pull origin main || exit
         EOF
