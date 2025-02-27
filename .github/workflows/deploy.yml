@@ -1,0 +1,26 @@
+name: Deploy to AWS Lightsail
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH key for deployment
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to AWS Lightsail
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@18.185.87.171 << 'EOF'
+          cd /home/ec2-user/python-flipcards-learner || exit
+          git pull origin main || exit
+        EOF
