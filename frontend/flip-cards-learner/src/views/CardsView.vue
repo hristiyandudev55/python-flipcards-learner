@@ -189,7 +189,7 @@ h1 {
   min-height: 100%; /* Fill parent's height */
   backface-visibility: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Change from center to flex-start */
   justify-content: center;
   padding: 2.5rem;
   border-radius: 12px;
@@ -205,6 +205,7 @@ h1 {
   word-wrap: break-word; /* Break long words */
   hyphens: auto; /* Add hyphenation */
   max-height: 400px; /* Maximum height */
+  padding-top: 3rem; /* Add more padding at the top */
 }
 
 .flip-card-front::before,
@@ -222,6 +223,13 @@ h1 {
 
 .flip-card-back {
   transform: rotateY(180deg);
+}
+
+/* For the content inside the cards */
+.flip-card-front p,
+.flip-card-back p {
+  margin-top: 0; /* Ensure no extra margin pushes content down */
+  width: 100%; /* Take full width */
 }
 
 .navigation {
