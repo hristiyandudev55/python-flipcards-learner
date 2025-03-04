@@ -104,12 +104,10 @@ const goBack = () => {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin: 40px auto 60px;
   width: auto;
-  height: 48px;
+  min-height: 48px;
 }
 
 .category-icon {
@@ -160,7 +158,8 @@ h1 {
 }
 
 .flip-card {
-  width: 650px;
+  width: 90%;
+  max-width: 650px;
   height: 400px;
   perspective: 1500px;
   cursor: pointer;
@@ -286,5 +285,51 @@ h1 {
   border-left: 4px solid #ff4444;
 }
 
+@media (max-width: 768px) {
+  .flip-card {
+    height: 300px;
+  }
+  
+  .flip-card-front,
+  .flip-card-back {
+    font-size: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .category-header h1 {
+    font-size: 1.8em;
+  }
+  
+  .navigation button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9em;
+  }
+}
 
+@media (max-width: 480px) {
+  .flip-card {
+    height: 250px;
+  }
+  
+  .flip-card-front,
+  .flip-card-back {
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+  
+  .category-header {
+    flex-direction: column;
+    margin-top: 60px;
+  }
+  
+  .category-header h1 {
+    font-size: 1.5em;
+  }
+}
 </style>

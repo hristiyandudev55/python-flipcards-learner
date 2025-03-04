@@ -6,7 +6,7 @@ from app.models import Base
 
 DATABASE_URL = DB_URL
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_size=5, max_overflow=10)
 Session = sessionmaker(autoflush=False, bind=engine)
 
 
