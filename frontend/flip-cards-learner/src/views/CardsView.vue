@@ -34,8 +34,8 @@ const currentIcon = computed(() => categoryIcons[category])
 
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/cards/${category}`)
-        cards.value = response.data
+      const response = await axios.get(`http://18.153.32.18:8000/api/cards/${category}`)
+      cards.value = response.data
     } catch (err) {
         console.error('Error:', err)
         error.value = err.response?.data?.detail || 'Error fetching cards'

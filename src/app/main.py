@@ -29,9 +29,10 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://18.153.32.18:5173",
-    "https://flipcards-app-assets.s3.eu-north-1.amazonaws.com"
-],
+        "http://18.153.32.18:5173",
+        "http://localhost:5173",
+        "https://flipcards-app-assets.s3.eu-north-1.amazonaws.com"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

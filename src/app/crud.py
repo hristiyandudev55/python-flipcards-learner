@@ -124,9 +124,7 @@ def get_all_cards_from_category(
     cards_from_category = db.query(FlipCard).filter(FlipCard.category == category).all()
 
     if not cards_from_category:
-        raise HTTPException(
-            status_code=404, detail=f"No cards found in category {category}."
-        )
+        return []
 
     return [FlipCardResponse.model_validate(card) for card in cards_from_category]
 
