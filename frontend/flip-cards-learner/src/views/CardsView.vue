@@ -160,7 +160,8 @@ h1 {
 .flip-card {
   width: 90%;
   max-width: 650px;
-  height: 400px;
+  height: auto; /* Allow height to adjust */
+  min-height: 400px; /* Minimum height */
   perspective: 1500px;
   cursor: pointer;
   margin: 20px auto;
@@ -184,7 +185,8 @@ h1 {
 .flip-card-back {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: auto; /* Allow height to adjust */
+  min-height: 100%; /* Fill parent's height */
   backface-visibility: hidden;
   display: flex;
   align-items: center;
@@ -198,6 +200,11 @@ h1 {
   font-weight: 500;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Add these for text handling */
+  overflow-y: auto; /* Add scrolling if needed */
+  word-wrap: break-word; /* Break long words */
+  hyphens: auto; /* Add hyphenation */
+  max-height: 400px; /* Maximum height */
 }
 
 .flip-card-front::before,
@@ -287,40 +294,27 @@ h1 {
 
 @media (max-width: 768px) {
   .flip-card {
-    height: 300px;
+    min-height: 300px;
   }
   
   .flip-card-front,
   .flip-card-back {
     font-size: 1rem;
     padding: 1.5rem;
-  }
-  
-  .back-button {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.5rem 1rem;
-  }
-  
-  .category-header h1 {
-    font-size: 1.8em;
-  }
-  
-  .navigation button {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9em;
+    max-height: 300px;
   }
 }
 
 @media (max-width: 480px) {
   .flip-card {
-    height: 250px;
+    min-height: 250px;
   }
   
   .flip-card-front,
   .flip-card-back {
     font-size: 0.9rem;
     padding: 1rem;
+    max-height: 250px;
   }
   
   .category-header {
