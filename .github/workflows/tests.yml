@@ -1,25 +1,21 @@
-name: Run tests on commit
+name: Run Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13
         env:
           POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
+          POSTGRES_PASSWORD: 1234
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
@@ -30,33 +26,26 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install Dependencies
-        run: poetry install --no-root
-
-      - name: Run tests
-        env:
-          DB_URL: "postgresql://test_user:test_password@localhost/test_db"
-          TEST_DB_URL: "postgresql://test_user:test_password@localhost/test_db"
-        run: poetry run pytest --maxfail=0 --disable-warnings .
-
-      - name: Push changes if tests pass
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet || (git add . && git commit -m "Auto-update after successful tests")
-          git push origin main
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      
+    - name: Install dependencies
+      run: |
+        poetry install
+        poetry run pip install locust
+        
+    - name: Set up test environment
+      run: |
+        echo "DATABASE_URL=postgresql://test_user:1234@localhost:5432/test_db" > .env
+        echo "PYTHONPATH=$PWD/src" >> .env
+        
+    - name: Run tests
+      run: |
+        poetry run pytest --maxfail=0 src/app/tests --disable-warnings
