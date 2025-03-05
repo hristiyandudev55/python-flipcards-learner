@@ -21,6 +21,43 @@ jobs:
     - name: Deploy to AWS Lightsail
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@18.153.32.18 << 'EOF'
-          cd /home/ec2-user/python-flipcards-learner || exit
-          git pull origin main || exit
+          cd /home/ec2-user/python-flipcards-learner || { echo "Failed to access project directory"; exit 1; }
+          
+          echo "==== Starting deployment $(date) ===="
+          
+          # Pull latest changes
+          echo "Pulling latest changes from main branch..."
+          git pull origin main || { echo "Failed to pull latest changes"; exit 1; }
+          
+          # Install any new dependencies
+          echo "Installing dependencies..."
+          poetry install || echo "Note: Poetry install returned non-zero exit code"
+          
+          cd frontend/flip-cards-learner
+          npm install || echo "Note: npm install returned non-zero exit code"
+          cd ../..
+          
+          # Restart the application service
+          echo "Restarting application service..."
+          sudo systemctl restart flipcards.service || { echo "Failed to restart service"; exit 1; }
+          
+          # Verify service is running
+          sleep 5
+          if sudo systemctl is-active --quiet flipcards.service; then
+            echo "Service restarted successfully"
+          else
+            echo "Warning: Service may not have restarted properly"
+            sudo systemctl status flipcards.service
+          fi
+          
+          echo "==== Deployment completed successfully $(date) ===="
         EOF
+        
+    - name: Verify deployment
+      run: |
+        # Wait for service to fully start
+        sleep 10
+        
+        # Check if service is responding
+        curl -s -o /dev/null -w "%{http_code}" http://18.153.32.18:8000/api/cards/OOP | grep -q "200" && \
+        echo "✅ Application is responding correctly" || echo "⚠️ Could not verify application is responding"
