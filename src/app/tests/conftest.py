@@ -44,6 +44,6 @@ def client(test_db):
 @pytest.fixture(autouse=True)
 def mock_s3_logger():
     """Mock S3 logger to prevent errors during testing"""
-    with mock.patch("app.utils.s3_logger.log_action") as mock_log:
+    with mock.patch('app.utils.s3_logger.s3_logger.log_action') as mock_log:
         mock_log.return_value = None
         yield mock_log
