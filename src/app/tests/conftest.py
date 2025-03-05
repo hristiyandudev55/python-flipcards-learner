@@ -3,35 +3,26 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.config import DB_TEST_URL
-from app.database import Base, get_db
 from app.main import app
+from app.models import Base
+from app.tests.database_test import override_get_db, TEST_DATABASE_URL
+from app.database import get_db
 
-TEST_DATABASE_URL = DB_TEST_URL
-
+# Create test database engine
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 @pytest.fixture(scope="function")
-def db_session():
-    """Clean db for every test."""
+def test_db():
+    # Create tables
     Base.metadata.create_all(bind=engine)
-    session = TestingSessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-        Base.metadata.drop_all(bind=engine)
-
+    yield
+    # Drop tables after test
+    Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture(scope="function")
-def client(db_session):
-    """FastAPI Client Test db."""
-
-    def override_get_db():
-        yield db_session
-
+def client(test_db):
     app.dependency_overrides[get_db] = override_get_db
-    yield TestClient(app)
-    app.dependency_overrides.clear()
+    with TestClient(app) as c:
+        yield c
+    app.dependency_overrides = {}
