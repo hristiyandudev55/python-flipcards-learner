@@ -246,3 +246,11 @@ ehthumbs.db
 Thumbs.db
 
 Devops_task.md
+progressnotes.md
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# AWS credentials
+.aws/
