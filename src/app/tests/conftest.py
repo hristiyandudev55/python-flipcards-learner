@@ -12,6 +12,7 @@ from app.database import get_db
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 @pytest.fixture(scope="function")
 def test_db():
     # Create tables
@@ -19,6 +20,7 @@ def test_db():
     yield
     # Drop tables after test
     Base.metadata.drop_all(bind=engine)
+
 
 @pytest.fixture(scope="function")
 def client(test_db):

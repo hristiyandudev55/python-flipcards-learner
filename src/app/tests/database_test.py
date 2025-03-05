@@ -8,6 +8,7 @@ engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+
 def override_get_db():
     db = TestingSessionLocal()
     try:
