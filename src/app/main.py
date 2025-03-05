@@ -31,7 +31,7 @@ app.add_middleware(
     allow_origins=[
         "http://18.153.32.18:5173",
         "http://localhost:5173",
-        "https://flipcards-app-assets.s3.eu-north-1.amazonaws.com"
+        "https://flipcards-app-assets.s3.eu-north-1.amazonaws.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -43,4 +43,5 @@ app.include_router(cards_router)
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("src.app.main:app", host="0.0.0.0", port=8000, reload=True)
